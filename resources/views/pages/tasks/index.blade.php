@@ -34,8 +34,9 @@
                 </p>
                 <a href="/tasks/create" class="btn btn-default">Create New Task<a>
                 <br>
+                <input type="text" name="filter" value="" placeholder="filter">
+                <br>
                 @foreach($tasks as $task)
-                    {{--  <a href="laravel_rocket/todoapp/tasks/{{$task->id}}">  --}}
                     <a href="tasks/{{$task->id}}/edit">
                         <div class="well">
                             <h3>{{$task->name}}</h3>
