@@ -66,7 +66,10 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group @if ($errors->has('role')) has-error @endif">
                     <label for="role">@lang('tables/admin-user-roles/columns.role')</label>
-                    <input type="text" class="form-control" id="role" name="role" value="{{ old('role') ? old('role') : $adminUserRole->role }}">
+                <select name="role" id="role" class="select2 form-control">
+                        <option value="super_user">@lang('tables/admin-user-roles/columns.role_options.super_user')</option>
+                        <option value="site_admin">@lang('tables/admin-user-roles/columns.role_options.site_admin')</option>
+                    </select>
                 </div>
             </div>
             </div>

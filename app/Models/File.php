@@ -19,8 +19,8 @@ class File extends Base
 
     const FILE_TYPE_FILE = 'file';
     const FILE_TYPE_IMAGE = 'image';
-    const STORAGE_TYPE_S3 = 's3';
     const STORAGE_TYPE_LOCAL = 'local';
+    const STORAGE_TYPE_S3 = 's3';
     const STORAGE_TYPE_URL = 'url';
 
     /**
@@ -70,14 +70,9 @@ class File extends Base
     protected $presenter = \App\Presenters\FilePresenter::class;
 
     // Relations
-    public function users()
+    public function profileImages()
     {
         return $this->hasMany(\App\Models\User::class, 'profile_image_id', 'id');
-    }
-
-    public function adminUsers()
-    {
-        return $this->hasMany(\App\Models\AdminUser::class, 'profile_image_id', 'id');
     }
 
 

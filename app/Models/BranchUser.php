@@ -51,11 +51,6 @@ class BranchUser extends Base
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
 
-    public function branch()
-    {
-        return $this->belongsTo(\App\Models\Branch::class, 'branch_id', 'id');
-    }
-
 
     // Utility Functions
 

@@ -52,7 +52,6 @@ File
                     <th>@lang('tables/files/columns.width')</th>
                     <th>@lang('tables/files/columns.height')</th>
                     <th>@lang('tables/files/columns.is_enabled')</th>
-                    <th>@lang('tables/files/columns.deleted_at')</th>
                     <th style="width: 40px">&nbsp;</th>
                 </tr>
                 @foreach( $models as $model )
@@ -74,8 +73,13 @@ File
                                 <td>{{ $model->present()->file_size }}</td>
                                 <td>{{ $model->present()->width }}</td>
                                 <td>{{ $model->present()->height }}</td>
-                                <td>{{ $model->present()->is_enabled }}</td>
-                                <td>{{ $model->present()->deleted_at }}</td>
+                                <td>
+                                    @if( $model->is_enabled )
+                                    <span class="badge bg-green">@lang('tables/files/columns.is_enabled_true')</span>
+                                    @else
+                                    <span class="badge bg-red">@lang('tables/files/columns.is_enabled_false')</span>
+                                    @endif
+                                </td>
                         <td>
                             <a href="{!! action('Admin\FileController@show', $model->id) !!}" class="btn btn-block btn-primary btn-sm">@lang('admin.pages.common.buttons.edit')</a>
                             <a href="#" class="btn btn-block btn-danger btn-sm delete-button" data-delete-url="{!! action('Admin\FileController@destroy', $model->id) !!}">@lang('admin.pages.common.buttons.delete')</a>

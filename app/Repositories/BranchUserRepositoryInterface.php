@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use LaravelRocket\Foundation\Repositories\RelationModelRepositoryInterface;
+use LaravelRocket\Foundation\Repositories\SingleKeyModelRepositoryInterface;
 /**
  *
  * @method  \App\Models\BranchUser[] getEmptyList()
@@ -19,7 +19,7 @@ use LaravelRocket\Foundation\Repositories\RelationModelRepositoryInterface;
  * @method  \App\Models\BranchUser[]|\Traversable|array allByFilter($filter,$order = null, $direction = null);
  */
 
-interface BranchUserRepositoryInterface extends RelationModelRepositoryInterface
+interface BranchUserRepositoryInterface extends SingleKeyModelRepositoryInterface
 {
     /**
      * @return  \App\Models\BranchUser

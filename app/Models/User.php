@@ -56,16 +56,6 @@ class User extends AuthenticatableBase
         return $this->belongsTo(\App\Models\File::class, 'profile_image_id', 'id');
     }
 
-    public function branchUsers()
-    {
-        return $this->hasMany(\App\Models\BranchUser::class, 'user_id', 'id');
-    }
-
-    public function branches()
-    {
-        return $this->belongsToMany(\App\Models\BranchUser::class, 'branch_users', 'branch_id', 'user_id');
-    }
-
 
     // Utility Functions
 

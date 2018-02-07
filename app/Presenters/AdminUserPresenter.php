@@ -32,7 +32,7 @@ class AdminUserPresenter extends BasePresenter
         $model = $this->entity->profileImage;
         if (!$model) {
             $model      = new \App\Models\File();
-            $model->url = \URLHelper::asset('img/noimage.png', 'common');
+            $model->url = \URLHelper::asset('images/user.png', 'common');
         }
         return $model;
     }

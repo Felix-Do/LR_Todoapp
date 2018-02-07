@@ -42,5 +42,10 @@ class ServiceServiceProvider extends ServiceProvider
         );
 
         /* NEW BINDING */
+
+        $this->app->singleton(
+            \App\Services\TaskServiceInterface::class,
+            \App\Services\Production\TaskService::class
+        );
     }
 }

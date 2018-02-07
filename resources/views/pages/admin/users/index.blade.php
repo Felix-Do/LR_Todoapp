@@ -37,9 +37,7 @@ User
                     <th style="width: 10px">ID</th>
                     <th>@lang('tables/users/columns.name')</th>
                     <th>@lang('tables/users/columns.email')</th>
-                    <th>@lang('tables/users/columns.password')</th>
                     <th>@lang('tables/users/columns.profile_image_id')</th>
-                    <th>@lang('tables/users/columns.remember_token')</th>
                     <th style="width: 40px">&nbsp;</th>
                 </tr>
                 @foreach( $models as $model )
@@ -47,9 +45,7 @@ User
                         <td>{{ $model->id }}</td>
                                 <td>{{ $model->present()->name }}</td>
                                 <td>{{ $model->present()->email }}</td>
-                                <td>{{ $model->present()->password }}</td>
                                 <td>{{ $model->present()->profile_image_id }}</td>
-                                <td>{{ $model->present()->remember_token }}</td>
                         <td>
                             <a href="{!! action('Admin\UserController@show', $model->id) !!}" class="btn btn-block btn-primary btn-sm">@lang('admin.pages.common.buttons.edit')</a>
                             <a href="#" class="btn btn-block btn-danger btn-sm delete-button" data-delete-url="{!! action('Admin\UserController@destroy', $model->id) !!}">@lang('admin.pages.common.buttons.delete')</a>

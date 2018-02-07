@@ -31,13 +31,5 @@ class BranchUserPresenter extends BasePresenter
         }
         return $model;
     }
-    public function branch()
-    {
-        $model = $this->entity->branch;
-        if (!$model) {
-            $model      = new \App\Models\Branch();
-        }
-        return $model;
-    }
 
 }

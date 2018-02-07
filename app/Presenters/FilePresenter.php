@@ -41,4 +41,20 @@ class FilePresenter extends BasePresenter
     ];
 
 
+    public function entity_type()
+    {
+        return trans('tables/files/columns.entity_type_options.'. $this->entity->entity_type);
+    }
+    public function storage_type()
+    {
+        return trans('tables/files/columns.storage_type_options.'. $this->entity->storage_type);
+    }
+    public function file_category_type()
+    {
+        return trans('tables/files/columns.file_category_type_options.'. $this->entity->file_category_type);
+    }
+    public function media_type()
+    {
+        return trans('tables/files/columns.media_type_options.'. $this->entity->media_type);
+    }
 }

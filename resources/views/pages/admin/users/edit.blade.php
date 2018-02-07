@@ -12,6 +12,28 @@
     <script>
         $('.datetime-field').datetimepicker({'format': 'YYYY-MM-DD HH:mm:ss'});
     </script>
+    <script>
+    $("#profile_image_id").fileinput({
+        overwriteInitial: true,
+        maxFileSize: 1500,
+        showClose: false,
+        showCaption: false,
+        browseLabel: '',
+        removeLabel: '',
+        browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
+        removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
+        removeTitle: 'Cancel or reset changes',
+        elErrorContainer: '#kv-avatar-errors-profile_image_id',
+        msgErrorClass: 'alert alert-block alert-danger',
+        @if( !empty($user->profileImage) )
+        defaultPreviewContent: '<img src="{!! $user->profileImage->getThumbnailUrl(200, 200) !!}" alt="Your Avatar" style="width:100px">',
+        @else
+        defaultPreviewContent: '<img src="{!! \URLHelper::asset('images/user.png', 'common') !!}" alt="Your Avatar" style="width:100px">',
+        @endif
+        layoutTemplates: {main2: '{preview} {remove} {browse}'},
+        allowedFileExtensions: ["jpg", "png", "gif", "jpeg"]
+    });
+    </script>
 @stop
 
 @section('title')
@@ -74,15 +96,22 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group @if ($errors->has('password')) has-error @endif">
                     <label for="password">@lang('tables/users/columns.password')</label>
-                    <input type="text" class="form-control" id="password" name="password" value="{{ old('password') ? old('password') : $user->password }}">
+                    <input type="password" class="form-control" id="password" name="password" value="">
                 </div>
             </div>
             </div>
             <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="form-group @if ($errors->has('profile_image_id')) has-error @endif">
-                    <label for="profile_image_id">@lang('tables/users/columns.profile_image_id')</label>
-                    <input type="text" class="form-control" id="profile_image_id" name="profile_image_id" value="{{ old('profile_image_id') ? old('profile_image_id') : $user->profile_image_id }}">
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div id="kv-avatar-errors-profile_image_id" class="center-block" style="display:none;"></div>
+                        <div class="kv-avatar center-block" style="width:160px">
+                            <input id="profile_image_id" name="profile_image_id" type="file" class="file-loading">
+                        </div>
+
+                    </div>
                 </div>
             </div>
             </div>

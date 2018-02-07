@@ -32,4 +32,8 @@ class AdminUserRolePresenter extends BasePresenter
         return $model;
     }
 
+    public function role()
+    {
+        return trans('tables/admin-user-roles/columns.role_options.'. $this->entity->role);
+    }
 }

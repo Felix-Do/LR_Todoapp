@@ -21,15 +21,23 @@
     <section>
         <div class="container">
             <br>
-            <p>current user: {{$user->id}} - {{$user->email}}</p>
-            <a href="{{ action('User\TaskController@create') }}" class="btn btn-default">Create New Task</a>
-            @if ( count($tasks) >= 1 )
-                <br>
-                <p>You have these tasks active:</p>
+            <p>current user: {{$data['user']->id}} - {{$data['user']->email}}</p>
+            @if ( count($data['tasks']) < 1 )
+                <p>You don't have any task</p>
+                <a href="{{ action('User\TaskController@create') }}" class="btn btn-default">Create New Task<a>
+            @else
+                <p>You have {{count($data['tasks'])}} upcoming
+                    @if ( count($data['tasks']) > 1 )
+                        tasks
+                    @else
+                        task
+                    @endif
+                </p>
+                <a href="{{ action('User\TaskController@create') }}" class="btn btn-default">Create New Task<a>
                 <br>
                 <input type="text" name="filter" value="" placeholder="filter">
                 <br>
-                @foreach($tasks as $task)
+                @foreach($data['tasks'] as $task)
                     <a href="tasks/{{$task->id}}/edit">
                         <div class="well">
                             <h3>{{$task->name}}</h3>
@@ -48,7 +56,7 @@
                         </div>
                     </a>
                 @endforeach
-                {{$tasks->links()}}
+                {{$data['tasks']->links()}}
             @endif
         </div>
     </section>

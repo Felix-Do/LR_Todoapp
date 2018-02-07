@@ -2,11 +2,11 @@
 
 namespace App\Repositories\Eloquent;
 
-use LaravelRocket\Foundation\Repositories\Eloquent\RelationModelRepository;
+use LaravelRocket\Foundation\Repositories\Eloquent\SingleKeyModelRepository;
 use App\Repositories\BranchUserRepositoryInterface;
 use App\Models\BranchUser;
 
-class BranchUserRepository extends RelationModelRepository implements BranchUserRepositoryInterface
+class BranchUserRepository extends SingleKeyModelRepository implements BranchUserRepositoryInterface
 {
 
     public function getBlankModel()

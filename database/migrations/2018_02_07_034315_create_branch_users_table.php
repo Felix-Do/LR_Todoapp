@@ -21,7 +21,6 @@ class CreateBranchUsersTable extends Migration
             $table->timestamps();
 
 			$table->index(['user_id'], 'fk_branch_users_users_idx');
-			$table->index(['branch_id'], 'fk_branch_users_branches1_idx');
 
 		});
 

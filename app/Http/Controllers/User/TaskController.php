@@ -7,11 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Services\UserServiceInterface;
 use App\Http\Requests\TaskCreateRequest;
-use App\Repositories\TaskTemplateRepositoryInterface;
-use App\Repositories\TaskRepositoryInterface;
-use App\Services\ProjectServiceInterface;
-use App\Services\ShiftServiceInterface;
 use App\Services\TaskServiceInterface;
+use App\Repositories\TaskRepositoryInterface;
+// use App\Repositories\TaskTemplateRepositoryInterface;
+// use App\Services\ProjectServiceInterface;
+// use App\Services\ShiftServiceInterface;
 
 class TaskController extends Controller
 {
@@ -19,17 +19,9 @@ class TaskController extends Controller
     protected $userService;
     /** @var TaskServiceInterface $taskService */
     protected $taskService;
-
-    public function __construct(
-        UserServiceInterface $userService
-        // , TaskServiceInterface $taskService
-    ) {
-        $this->userService = $userService;
-        // $this->taskService            = $taskService;
-    }
+    /** @var TaskRepositoryInterface $taskRepository */
+    protected $taskRepository;
     
-    // /** @var TaskRepositoryInterface $taskRepository */
-    // protected $taskRepository;
     // /** @var ProjectServiceInterface $projectService */
     // protected $projectService;
     // /** @var TaskTemplateRepositoryInterface $taskTemplateRepository */
@@ -37,17 +29,21 @@ class TaskController extends Controller
     // /** @var ShiftServiceInterface $shiftServices */
     // protected $shiftService;
 
-    // public function __construct(
-    //     // ProjectServiceInterface $projectService,
-    //     // TaskTemplateRepositoryInterface $taskTemplateRepository,
-    //     // ShiftServiceInterface $shiftService,
-    //     // TaskRepositoryInterface $taskRepository
-    // ) {
-    //     // $this->projectService         = $projectService;
-    //     // $this->taskTemplateRepository = $taskTemplateRepository;
-    //     // $this->shiftService           = $shiftService;
-    //     // $this->taskRepository         = $taskRepository;
-    // }
+    public function __construct(
+        UserServiceInterface $userService
+        , TaskServiceInterface $taskService
+        , TaskRepositoryInterface $taskRepository
+        // , TaskTemplateRepositoryInterface $taskTemplateRepository
+        // , ProjectServiceInterface $projectService
+        // , ShiftServiceInterface $shiftService
+    ) {
+        $this->userService            = $userService;
+        $this->taskService            = $taskService;
+        $this->taskRepository         = $taskRepository;
+        // $this->taskTemplateRepository = $taskTemplateRepository;
+        // $this->projectService         = $projectService;
+        // $this->shiftService           = $shiftService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -57,18 +53,14 @@ class TaskController extends Controller
     public function index()
     {
         $user = $this->userService->getUser();
-        $all_tasks = Task::orderBy('duedate', 'asc')->paginate(5);
-        $tasks = array();
-        foreach ($all_tasks as $task) {
-            if ($task->user_id == $user->id) {
-                array_push($tasks, $task);
-            }
+        if(empty($user)) {
+            return redirect(action('User\AuthController@getSignIn'));
         }
-        $data = [
+        $tasks = $this->taskService->getTasks($user->id,5,'duedate','desc');
+        return view('pages.user.tasks.index', [
             'tasks' => $tasks,
             'user' => $user
-        ];
-        return view('pages.user.tasks.index')->with('data', $data);
+        ]);
     }
 
     /**
@@ -78,18 +70,16 @@ class TaskController extends Controller
      */
     public function create()
     {
-        // create a temp Task to pass to the Create page
-        // this Task will have a temp "Untitled Task" name
-        // and a non-blank duedate attempted to be set to today (currently failing)
-        $task = new Task;
-        $task->name = "Untitled Task";
-        $task->duedate = date('Y/m/d');
         $user = $this->userService->getUser();
-        $data = [
+        if(empty($user)) {
+            return redirect(action('User\TaskController@index'));
+        }
+        // create a temp Task to pass to the Create page
+        $task = $this->taskService->newTask_param();
+        return view('pages.user.tasks.create', [
             'task' => $task,
             'user' => $user
-        ];
-        return view('pages.user.tasks.create')->with('data', $data);
+        ]);
     }
 
     /**
@@ -100,39 +90,23 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $user = $this->userService->getUser();
+        if(empty($user)) {
+            return redirect(action('User\AuthController@getSignIn'));
+        }
         if (empty($request->input('name')) || empty($request->input('duedate'))) {
+            // inputs are no good
             // create a temp Task to pass back to the Create page
-            // (should this not be here and somewhere else instead?)
-            $task = new Task;
-            $task->name = $request->input('name');
-            $task->description = $request->input('description');
-            $task->duedate = $request->input('duedate');
-            $task->status = $request->input('status');
-            $task->label = $request->input('label');
-            if (empty($request->input('status'))) $task->status = 0;
-            if (empty($request->input('label'))) $task->label = 0;
-            $user = $this->userService->getUser();
-            $data = [
+            $task = $this->taskService->newTask_request($request->all(), $user->id);
+            return view('pages.user.tasks.create', [
                 'task' => $task,
                 'user' => $user
-            ];
-            return view('pages.user.tasks.create')->with('data', $data);
+            ]);
         }
 
-        $user = $this->userService->getUser();
-        // create new Task
-        $task = new Task;
-        $task->name = $request->input('name');
-        $task->description = $request->input('description');
-        $task->duedate = $request->input('duedate');
-        $task->status = $request->input('status');
-        $task->label = $request->input('label');
-        $task->user_id = $user->id;
-        if (empty($request->input('status'))) $task->status = 0;
-        if (empty($request->input('label'))) $task->label = 0;
-        $task->save();
+        $task = $this->taskService->storeTask($request->all(), $user->id);
 
-        return \Redirect::action('User\TaskController@index');
+        return redirect(action('User\TaskController@index'));
     }
 
     /**
@@ -155,17 +129,16 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::find($id);
         $user = $this->userService->getUser();
-        // redirect to index page if the user has no rights
-        if ($task->user_id !== $user->id) {
+        $task = $this->taskService->getTask($id, $user->id);
+        // redirect to index page if the user has no rights or task does not exist
+        if ($task->user_id !== $user->id || empty($task)) {
             return \Redirect::action('User\TaskController@index');
         }
-        $data = [
+        return view('pages.user.tasks.edit', [
             'task' => $task,
             'user' => $user
-        ];
-        return view('pages.user.tasks.edit')->with('data', $data);
+        ]);
     }
 
     /**
@@ -184,24 +157,12 @@ class TaskController extends Controller
             return \Redirect::action('User\TaskController@destroy', ['id' => $id]);
         }
 
-        if (empty($request->input('name')) || empty($request->input('duedate'))) {
-            // field is empty, go back to edit page with the original values
+        $user = $this->userService->getUser();
+        $task = $this->taskService->updateTask($request,$id,$user->id);
+        if (empty($task)) {
+            // a required field is empty, go back to edit page with the original values
             return \Redirect::action('User\TaskController@edit', $id);
         }
-        
-        $task = Task::find($id);
-        $task->name = $request->input('name');
-        $task->description = $request->input('description');
-        $task->duedate = $request->input('duedate');
-        $task->status = $request->input('status');
-        if (empty($request->input('status'))) {
-            $task->status = 0;
-        }
-        $task->label = $request->input('label');
-        if (empty($request->input('label'))) {
-            $task->label = 0;
-        }
-        $task->save();
 
         return \Redirect::action('User\TaskController@index');
     }
@@ -214,15 +175,8 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-
-        $task = Task::find($id);
         $user = $this->userService->getUser();
-        // redirect to index page if the user has no rights
-        if ($task->user_id !== $user->id) {
-            return \Redirect::action('User\TaskController@index');
-        }
-        $task->delete();
-        // Task::destroy($id);
+        $this->taskService->deleteTask($id, $user->id);
         return \Redirect::action('User\TaskController@index');
     }
 }

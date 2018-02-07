@@ -1,204 +1,135 @@
-<?php
+<?PHP
+
 namespace App\Services\Production;
 
 use App\Models\Task;
-use App\Repositories\PostRepositoryInterface;
 use App\Repositories\TaskRepositoryInterface;
-use App\Repositories\TaskTemplateRepositoryInterface;
-use App\Services\ShiftServiceInterface;
 use App\Services\TaskServiceInterface;
-use App\Services\TimelineServiceInterface;
-use LaravelRocket\Foundation\Exceptions\ClientErrorException;
 use LaravelRocket\Foundation\Services\Production\BaseService;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Http\Request;
 
-class TaskService extends BaseService implements TaskServiceInterface
+class TaskService extends  BaseService  implements TaskServiceInterface
 {
-    /** @var \App\Repositories\TaskRepositoryInterface */
+    /** @var  \App\Repositories\TaskRepositoryInterface */
     protected $taskRepository;
 
-    /** @var TaskTemplateRepositoryInterface $taskTemplateRepository */
-    protected $taskTemplateRepository;
-
-    /** @var ShiftServiceInterface $shiftService */
-    protected $shiftService;
-    /**
-     * @var \App\Services\TimelineServiceInterface
-     */
-    private $timelineService;
-    /**
-     * @var \App\Repositories\PostRepositoryInterface
-     */
-    private $postRepository;
-
     public function __construct(
-        TaskRepositoryInterface $taskRepository,
-        TaskTemplateRepositoryInterface $taskTemplateRepository,
-        ShiftServiceInterface $shiftService,
-        TimelineServiceInterface $timelineService,
-        PostRepositoryInterface $postRepository
+        TaskRepositoryInterface $taskRepository
     ) {
-        $this->taskRepository         = $taskRepository;
-        $this->taskTemplateRepository = $taskTemplateRepository;
-        $this->shiftService           = $shiftService;
-        $this->timelineService        = $timelineService;
-        $this->postRepository         = $postRepository;
+        $this->taskRepository = $taskRepository;
     }
 
-    public function startTask($unit, $date, $index, $taskTemplateId, $startTime)
-    {
-        if (!($date instanceof \DateTime)) {
-            $result = preg_match('/(\d\d\d\d)-(\d\d)-(\d\d)/', $date, $matches);
-            if (!$result) {
-                throw new ClientErrorException('notFound', 'Invalid Date Format', []);
-            }
-            $date = (\DateTimeHelper::now())->setDate($matches[1], $matches[2], $matches[3]);
+    public function getModel() {
+        return new Task;
+    }
+
+    public function getTasks($user_id=-1,$perPageCount=-1,$sortBy='duedate',$sortDir='asc') {
+        
+        $perPageCountMax = 10;
+        if ($perPageCount < 1 || $perPageCount > $perPageCountMax) {
+            $perPageCount = $perPageCountMax;
         }
 
-        if ($startTime instanceof \DateTime) {
-            $startTime = $startTime->format('U');
+        // get the tasks and sort them
+        $tasks = Task::orderBy('duedate', 'asc')->paginate($perPageCount);
+        if ($user_id >= 0) {
+            $tasks = Task::orderBy('duedate', 'asc')
+                ->where('user_id', $user_id)
+                ->paginate($perPageCount);
         }
-
-        $existingTasks = $this->taskRepository->allByFilter([
-            'unit_id'     => $unit->id,
-            'date'        => $date,
-            'index'       => $index,
-            'finished_at' => 0,
-        ]);
-        if (count($existingTasks) > 0) {
-            return $existingTasks[0];
-        }
-
-        $taskTemplate = $this->taskTemplateRepository->find($taskTemplateId);
-        if (empty($taskTemplate) || $taskTemplate->project_id != $unit->site->project_id) {
-            throw new ClientErrorException('notFound', $taskTemplate->project_id.$unit->site->project_id.'Task Template not found');
-        }
-
-        if ($taskTemplate->is_exclusive) {
-            $taskTemplates = $this->taskTemplateRepository->allByFilter([
-                'project_id'    => $taskTemplate->project_id,
-                'category_type' => $taskTemplate->category_type,
-            ], 'id', 'asc');
-            $exclusiveIds  = $taskTemplates->pluck('id')->toArray();
-            if (count($exclusiveIds) > 0) {
-                $tasks = $this->taskRepository->allByFilter([
-                    'task_template_id' => $exclusiveIds,
-                    'finished_at'      => 0,
-                ], 'id', 'asc');
-                foreach ($tasks as $task) {
-                    $this->finishTask($task, $startTime - 1);
+        if (Schema::hasTable('tasks')) {
+            if (Schema::hasColumn('tasks', $sortBy)) {
+                if ($sortDir=='asc' || $sortDir=='desc') {
+                    $tasks = Task::orderBy($sortBy, $sortDir)->paginate($perPageCount);
+                    if ($user_id >= 0) {
+                        $tasks = Task::orderBy($sortBy, $sortDir)
+                            ->where('user_id', $user_id)
+                            ->paginate($perPageCount);
+                    }
                 }
             }
         }
-
-        return $this->taskRepository->create([
-            'unit_id'          => $unit->id,
-            'date'             => $date,
-            'index'            => $index,
-            'task_template_id' => $taskTemplateId,
-            'started_at'       => $startTime,
-        ]);
+        
+        return $tasks;
     }
 
-    public function finishTask($task, $endTime)
-    {
-        if ($endTime instanceof \DateTime) {
-            $endTime = $endTime->format('U');
-        }
-
-        $task = $this->taskRepository->update($task, [
-            'finished_at' => $endTime,
-        ]);
-
+    public function getTask($id=-1,$user_id=-1) {
+        $task = Task::find($id);
+        if ($task->user_id !== $user_id && $user_id >= 0) return "";
         return $task;
     }
 
-    public function getTaskForMonth($unit, $year, $month)
-    {
-        $tasks = $this->taskRepository->allTaskByMonth($unit->id, $year, $month);
-
-        $currentTask  = [];
-        $finishedTask = [];
-        $project      = $unit->site->project;
-        /* @var \App\Models\Task $task */
-        foreach ($tasks as $task) {
-            $thread         = $this->timelineService->getThread($project, Task::getTableName(), $task->id);
-            $task->timeline = [];
-            if (!empty($thread)) {
-                $filter = [
-                    'post_thread_id' => $thread->id,
-                ];
-
-                $task->timeline = $this->postRepository->allByFilter($filter, 'posted_at', 'desc');
-            }
-            if ($task->finished_at === 0) {
-                $currentTask[$task->task_template_id][] = $task;
-            } else {
-                $finishedTask[$task->task_template_id][] = $task;
-            }
+    public function modifyTask_param(
+        $task,
+        $user_id=0,
+        $name="Untitled Task",
+        $description="",
+        $duedate="current_date",
+        $status=0,
+        $label=0
+    ) {
+        if (empty($task)) return "";
+        $task->user_id = $user_id;
+        $task->user_id = $user_id;
+        $task->name = $name;
+        $task->description = $description;
+        $task->duedate = $duedate;
+        if ($task->duedate == "current_date") {
+            $task->duedate = date('Y/m/d');
         }
-
-        $taskTemplates = $this->taskTemplateRepository->allByFilter([
-            'project_id'  => $project->id,
-            'is_disabled' => false,
-        ], 'hierarchy', 'asc');
-
-        $result = [
-            'taskTemplates' => $taskTemplates,
-            'currentTask'   => $currentTask,
-            'finishedTask'  => $finishedTask,
-        ];
-
-        return $result;
+        $task->status = $status;
+        $task->label = $label;
+        return $task;
     }
 
-    /**
-     * get task template by day and index.
-     *
-     * @param $unit
-     * @param $day
-     * @param $index
-     *
-     * @return array
-     */
-    public function getTaskForDay($unit, $day, $index)
-    {
-        $tasks = $this->taskRepository->allByFilter([
-            'unit_id'     => $unit->id,
-            'date'        => $day,
-            'index'       => $index,
-        ], 'id', 'asc');
-        $project        = $unit->site->project;
-        $currentTask    = [];
-        $finishedTask   = [];
-        /* @var \App\Models\Task $task */
-        foreach ($tasks as $task) {
-            $thread         = $this->timelineService->getThread($project, Task::getTableName(), $task->id);
-            $task->timeline = [];
-            if (!empty($thread)) {
-                $filter = [
-                    'post_thread_id' => $thread->id,
-                ];
+    public function modifyTask($task, $user_id, $request) {
+        $name = $request['name'];
+        $description = $request['description'];
+        $duedate = $request['duedate'];
+        $status = $request['status'];
+        $label = $request['label'];
+        if (empty($request['status'])) $status = 0;
+        if (empty($request['label'])) $label = 0;
+        return $this->modifyTask_param($task,$user_id,$name,$description,$duedate,$status,$label);
+    }
+    
+    public function newTask_param(
+        $user_id=0,
+        $name="Untitled Task",
+        $description="",
+        $duedate="current_date",
+        $status=0,
+        $label=0
+    ) {
+        $task = $this->getModel();
+        return $this->modifyTask_param($task,$user_id,$name,$description,$duedate,$status,$label);
+    }
+    
+    public function newTask($request,$user_id=0) {
+        $task = $this->getModel();
+        return $this->modifyTask($task,$user_id,$request);
+    }
 
-                $task->timeline = $this->postRepository->allByFilter($filter, 'posted_at', 'desc');
-            }
-            if ($task->finished_at === 0) {
-                $currentTask[$task->task_template_id][]     = $task;
-            } else {
-                $finishedTask[$task->task_template_id][]    = $task;
-            }
-        }
+    public function storeTask($request,$user_id=0) {
+        $task = $this->newTask($request,$user_id);
+        $task->save();
+        return $task;
+    }
 
-        $taskTemplates = $this->taskTemplateRepository->allByFilter([
-            'project_id'  => $unit->site->project->id,
-            'is_disabled' => false,
-        ], 'hierarchy', 'asc');
+    public function updateTask($request,$id,$user_id=0) {
+        $task = $this->getTask($id,$user_id);
+        if (empty($task)) return "";
+        $task = $this->modifyTask($task, $user_id, $request);
+        if (empty($task->name) || empty($task->duedate)) return "";
+        $task->save();
+        return $task;
+    }
 
-        $result = [
-            'taskTemplates' => $taskTemplates,
-            'currentTask'   => $currentTask,
-            'finishedTask'  => $finishedTask,
-        ];
-
-        return $result;
+    public function deleteTask($id,$user_id=0) {
+        $task = $this->getTask($id,$user_id);
+        if (empty($task)) return "";
+        $task->delete();
+        return "";
     }
 }

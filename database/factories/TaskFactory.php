@@ -7,7 +7,7 @@ $factory->define(App\Models\Task::class, function (Faker\Generator $faker) {
         'user_id' => 0,
         'name' => $faker->name,
         'description' => null,
-        'duedate' => str_random(10),
+        'duedate' => $faker->date(),
         'status' => 0,
         'label' => 0,
     ];

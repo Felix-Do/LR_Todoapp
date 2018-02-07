@@ -27,9 +27,14 @@ class TaskPresenter extends BasePresenter
     protected $imageFields = [
     ];
 
-    public function statusString($index = 0) {
-        if ($index == 1) return "In Progress";
-        else if ($index == 2) return "Finished";
+    public function statusName($value=0) {
+        if ($value == 1) return "In Progress";
+        else if ($value == 2) return "Finished";
         else return "Not Started";
+    }
+
+    public function labelName($value=0) {
+        if ($value == 0) return "No Label";
+        else return "Label ".$value;
     }
 }

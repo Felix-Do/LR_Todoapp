@@ -74,7 +74,8 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group @if ($errors->has('entity_type')) has-error @endif">
                     <label for="entity_type">@lang('tables/files/columns.entity_type')</label>
-                    <input type="text" class="form-control" id="entity_type" name="entity_type" value="{{ old('entity_type') ? old('entity_type') : $file->entity_type }}">
+                <select name="entity_type" id="entity_type" class="select2 form-control">
+                    </select>
                 </div>
             </div>
             </div>
@@ -90,7 +91,8 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group @if ($errors->has('storage_type')) has-error @endif">
                     <label for="storage_type">@lang('tables/files/columns.storage_type')</label>
-                    <input type="text" class="form-control" id="storage_type" name="storage_type" value="{{ old('storage_type') ? old('storage_type') : $file->storage_type }}">
+                <select name="storage_type" id="storage_type" class="select2 form-control">
+                    </select>
                 </div>
             </div>
             </div>
@@ -98,7 +100,8 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group @if ($errors->has('file_category_type')) has-error @endif">
                     <label for="file_category_type">@lang('tables/files/columns.file_category_type')</label>
-                    <input type="text" class="form-control" id="file_category_type" name="file_category_type" value="{{ old('file_category_type') ? old('file_category_type') : $file->file_category_type }}">
+                <select name="file_category_type" id="file_category_type" class="select2 form-control">
+                    </select>
                 </div>
             </div>
             </div>
@@ -138,7 +141,8 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group @if ($errors->has('media_type')) has-error @endif">
                     <label for="media_type">@lang('tables/files/columns.media_type')</label>
-                    <input type="text" class="form-control" id="media_type" name="media_type" value="{{ old('media_type') ? old('media_type') : $file->media_type }}">
+                <select name="media_type" id="media_type" class="select2 form-control">
+                    </select>
                 </div>
             </div>
             </div>
@@ -188,15 +192,17 @@
                     <label for="thumbnails">@lang('tables/files/columns.thumbnails')</label>
                     <textarea name="thumbnails" class="form-control" rows="5" placeholder="@lang('tables/files/columns.thumbnails')">{!!  old('thumbnails') ? old('thumbnails') : $file->thumbnails !!}</textarea>
                 </div>
-
             </div>
             </div>
             <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="form-group @if ($errors->has('is_enabled')) has-error @endif">
-                    <label for="is_enabled">@lang('tables/files/columns.is_enabled')</label>
-                    <input type="text" class="form-control" id="is_enabled" name="is_enabled" value="{{ old('is_enabled') ? old('is_enabled') : $file->is_enabled }}">
-                </div>
+                <td>
+                    <div class="form-group @if ($errors->has('is_enabled')) has-error @endif">
+                        <label for="is_enabled">@lang('tables/files/columns.is_enabled')</label><br/>
+                        <input type="radio" name="is_enabled" value="0" @if( $file->is_enabled == 0 ) checked @endif> @lang('tables/files/columns.is_enabled_false')
+                        <input type="radio" name="is_enabled" value="1" @if( $file->is_enabled == 1 ) checked @endif> @lang('tables/files/columns.is_enabled_true')
+                    </div>
+                </td>
             </div>
             </div>
             </div>
