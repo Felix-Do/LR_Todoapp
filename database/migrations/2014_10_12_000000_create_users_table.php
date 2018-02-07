@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
 		Schema::create('users', function(Blueprint $table) {
 			$table->bigIncrements('id');
 
-			$table->string('name');
+			$table->string('name')->default('');
 			$table->string('email');
 			$table->string('password');
 			$table->unsignedBigInteger('profile_image_id')->default(0);
@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
 
 			$table->index(['email'], 'email_index');
 			$table->index(['profile_image_id'], 'fk_users_files1_idx');
+			$table->unique(['email'], 'email_UNIQUE');
 
 		});
 

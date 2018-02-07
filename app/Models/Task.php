@@ -29,6 +29,7 @@ class Task extends Base
      * @var  array
      */
     protected $fillable = [
+        'user_id',
         'name',
         'description',
         'duedate',

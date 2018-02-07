@@ -31,7 +31,7 @@ class AuthController extends Controller
 
         // return \RedirectHelper::intended(action('User\IndexController@show'));
         // return \RedirectHelper::intended(action('User\IndexController@index'));
-        return \RedirectHelper::intended(action('User\TasksController@index'));
+        return \RedirectHelper::intended(action('User\TaskController@index'));
     }
 
     public function getSignUp()
@@ -49,7 +49,7 @@ class AuthController extends Controller
 
         // return \RedirectHelper::intended(action('User\IndexController@show'));
         // return \RedirectHelper::intended(action('User\IndexController@index'));
-        return \RedirectHelper::intended(action('User\TasksController@index'));
+        return \RedirectHelper::intended(action('User\TaskController@index'));
     }
 
     public function postSignOut()

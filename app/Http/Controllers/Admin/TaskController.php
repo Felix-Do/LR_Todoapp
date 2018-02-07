@@ -67,6 +67,7 @@ class TaskController extends Controller
     public function store(TaskRequest $request)
     {
         $input = $request->only([
+            'user_id',
             'name',
             'description',
             'duedate',
@@ -129,6 +130,7 @@ class TaskController extends Controller
         }
 
         $input = $request->only([
+            'user_id',
             'name',
             'description',
             'duedate',

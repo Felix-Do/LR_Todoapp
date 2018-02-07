@@ -56,6 +56,14 @@
             <div class="box-body">
             <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group @if ($errors->has('user_id')) has-error @endif">
+                    <label for="user_id">@lang('tables/tasks/columns.user_id')</label>
+                    <input type="text" class="form-control" id="user_id" name="user_id" value="{{ old('user_id') ? old('user_id') : $task->user_id }}">
+                </div>
+            </div>
+            </div>
+            <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group @if ($errors->has('name')) has-error @endif">
                     <label for="name">@lang('tables/tasks/columns.name')</label>
                     <input type="text" class="form-control" id="name" name="name" value="{{ old('name') ? old('name') : $task->name }}">

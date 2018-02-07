@@ -8,6 +8,7 @@ use LaravelRocket\Foundation\Presenters\BasePresenter;
  *
  * @property  \App\Models\Task $entity
  * @property  int $id
+ * @property  int $user_id
  * @property  string $name
  * @property  string $description
  * @property  mixed $duedate

@@ -35,6 +35,7 @@ Task
             <table class="table table-bordered">
                 <tr>
                     <th style="width: 10px">ID</th>
+                    <th>@lang('tables/tasks/columns.user_id')</th>
                     <th>@lang('tables/tasks/columns.name')</th>
                     <th>@lang('tables/tasks/columns.description')</th>
                     <th>@lang('tables/tasks/columns.duedate')</th>
@@ -45,6 +46,7 @@ Task
                 @foreach( $models as $model )
                     <tr>
                         <td>{{ $model->id }}</td>
+                                <td>{{ $model->present()->user_id }}</td>
                                 <td>{{ $model->present()->name }}</td>
                                 <td>{{ $model->present()->description }}</td>
                                 <td>{{ $model->present()->duedate }}</td>

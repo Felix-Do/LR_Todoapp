@@ -23,4 +23,4 @@ Route::group([], function () {
 });
 
 
-Route::resource('tasks', 'User\TasksController');
+Route::resource('tasks', 'User\TaskController');

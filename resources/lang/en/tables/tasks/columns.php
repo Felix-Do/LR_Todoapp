@@ -2,6 +2,7 @@
 
 return [
     'id' => 'Id',
+    'user_id' => 'User',
     'name' => 'Name',
     'description' => 'Description',
     'duedate' => 'Duedate',

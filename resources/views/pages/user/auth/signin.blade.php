@@ -28,7 +28,7 @@
                     <i class="p-auth-box__icon fa fa-envelope"></i>
                 </span>
                     <input type="email" name="email" class="p-auth-box__field"
-                           placeholder="@lang('user.pages.auth.messages.email')">
+                           placeholder="@lang('user.pages.auth.messages.email')" autofocus>
                 </div>
                 <div class="input-group">
                 <span class="p-auth-box__label">
