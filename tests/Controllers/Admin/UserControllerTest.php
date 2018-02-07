@@ -1,15 +1,17 @@
-<?php
+<?PHP
+
 namespace Tests\Controllers\Admin;
 
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
+
     protected $useDatabase = true;
 
     public function testGetInstance()
     {
-        /** @var \App\Http\Controllers\Admin\UserController $controller */
+        /** @var    \App\Http\Controllers\Admin\UserController $controller */
         $controller = \App::make(\App\Http\Controllers\Admin\UserController::class);
         $this->assertNotNull($controller);
     }
@@ -17,17 +19,17 @@ class UserControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $authUser     = factory(\App\Models\AdminUser::class)->create();
+        $authUser = factory(\App\Models\AdminUser::class)->create();
         $authUserRole = factory(\App\Models\AdminUserRole::class)->create([
             'admin_user_id' => $authUser->id,
-            'role'          => \App\Models\AdminUserRole::ROLE_SUPER_USER,
+            'role' => \App\Models\AdminUserRole::ROLE_SUPER_USER,
         ]);
         $this->be($authUser, 'admins');
     }
 
     public function testGetList()
     {
-        $this->action('GET', 'Admin\UserController@index');
+        $response = $this->action('GET', 'Admin\UserController@index');
         $this->assertResponseOk();
     }
 
@@ -41,8 +43,7 @@ class UserControllerTest extends TestCase
     {
         $user = factory(\App\Models\User::class)->make();
         $this->action('POST', 'Admin\UserController@store', [
-                '_token'   => csrf_token(),
-                'password' => str_random(12),
+                '_token' => csrf_token(),
             ] + $user->toArray());
         $this->assertResponseStatus(302);
     }
@@ -60,8 +61,8 @@ class UserControllerTest extends TestCase
 
         $user = factory(\App\Models\User::class)->create();
 
-        $testData = $faker->name;
-        $id       = $user->id;
+        $testData = str_random(10);
+        $id = $user->id;
 
         $user->name = $testData;
 
@@ -88,4 +89,5 @@ class UserControllerTest extends TestCase
         $checkUser = \App\Models\User::find($id);
         $this->assertNull($checkUser);
     }
+
 }

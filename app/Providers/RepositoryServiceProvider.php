@@ -52,5 +52,15 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         /* NEW BINDING */
+
+        $this->app->singleton(
+            \App\Repositories\BranchRepositoryInterface::class,
+            \App\Repositories\Eloquent\BranchRepository::class
+        );
+
+        $this->app->singleton(
+            \App\Repositories\TaskRepositoryInterface::class,
+            \App\Repositories\Eloquent\TaskRepository::class
+        );
     }
 }

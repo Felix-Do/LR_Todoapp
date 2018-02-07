@@ -1,15 +1,17 @@
-<?php
+<?PHP
+
 namespace Tests\Controllers\Admin;
 
 use Tests\TestCase;
 
 class AdminUserControllerTest extends TestCase
 {
+
     protected $useDatabase = true;
 
     public function testGetInstance()
     {
-        /** @var \App\Http\Controllers\Admin\AdminUserController $controller */
+        /** @var    \App\Http\Controllers\Admin\AdminUserController $controller */
         $controller = \App::make(\App\Http\Controllers\Admin\AdminUserController::class);
         $this->assertNotNull($controller);
     }
@@ -17,17 +19,17 @@ class AdminUserControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $authUser     = factory(\App\Models\AdminUser::class)->create();
+        $authUser = factory(\App\Models\AdminUser::class)->create();
         $authUserRole = factory(\App\Models\AdminUserRole::class)->create([
             'admin_user_id' => $authUser->id,
-            'role'          => \App\Models\AdminUserRole::ROLE_SUPER_USER,
+            'role' => \App\Models\AdminUserRole::ROLE_SUPER_USER,
         ]);
         $this->be($authUser, 'admins');
     }
 
     public function testGetList()
     {
-        $this->action('GET', 'Admin\AdminUserController@index');
+        $response = $this->action('GET', 'Admin\AdminUserController@index');
         $this->assertResponseOk();
     }
 
@@ -41,8 +43,7 @@ class AdminUserControllerTest extends TestCase
     {
         $adminUser = factory(\App\Models\AdminUser::class)->make();
         $this->action('POST', 'Admin\AdminUserController@store', [
-                '_token'   => csrf_token(),
-                'password' => str_random(12),
+                '_token' => csrf_token(),
             ] + $adminUser->toArray());
         $this->assertResponseStatus(302);
     }
@@ -60,8 +61,8 @@ class AdminUserControllerTest extends TestCase
 
         $adminUser = factory(\App\Models\AdminUser::class)->create();
 
-        $testData = $faker->name;
-        $id       = $adminUser->id;
+        $testData = str_random(10);
+        $id = $adminUser->id;
 
         $adminUser->name = $testData;
 
@@ -88,4 +89,5 @@ class AdminUserControllerTest extends TestCase
         $checkAdminUser = \App\Models\AdminUser::find($id);
         $this->assertNull($checkAdminUser);
     }
+
 }

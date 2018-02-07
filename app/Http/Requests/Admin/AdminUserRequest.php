@@ -1,12 +1,14 @@
-<?php
+<?PHP
+
 namespace App\Http\Requests\Admin;
 
-use App\Repositories\AdminUserRepositoryInterface;
 use LaravelRocket\Foundation\Http\Requests\Request;
+use App\Repositories\AdminUserRepositoryInterface;
 
 class AdminUserRequest extends Request
 {
-    /** @var \App\Repositories\AdminUserRepositoryInterface */
+
+    /** @var  \App\Repositories\AdminUserRepositoryInterface */
     protected $adminUserRepository;
 
     public function __construct(AdminUserRepositoryInterface $adminUserRepository)
@@ -18,7 +20,7 @@ class AdminUserRequest extends Request
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return  bool
      */
     public function authorize()
     {
@@ -28,7 +30,7 @@ class AdminUserRequest extends Request
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return  array
      */
     public function rules()
     {
@@ -39,4 +41,5 @@ class AdminUserRequest extends Request
     {
         return $this->adminUserRepository->messages();
     }
+
 }

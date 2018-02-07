@@ -1,0 +1,26 @@
+<?PHP
+
+return [
+    'id' => 'Id',
+    'url' => 'Url',
+    'title' => 'Title',
+    'entity_type' => 'Entity Type',
+    'entity_id' => 'Entity',
+    'storage_type' => 'Storage Type',
+    'file_category_type' => 'File Category Type',
+    's3_key' => 'S3 Key',
+    's3_bucket' => 'S3 Bucket',
+    's3_region' => 'S3 Region',
+    's3_extension' => 'S3 Extension',
+    'media_type' => 'Media Type',
+    'format' => 'Format',
+    'original_file_name' => 'Original File Name',
+    'file_size' => 'File Size',
+    'width' => 'Width',
+    'height' => 'Height',
+    'thumbnails' => 'Thumbnails',
+    'is_enabled' => 'Is Enabled',
+    'deleted_at' => 'Deleted At',
+    'created_at' => 'Created At',
+    'updated_at' => 'Updated At',
+];

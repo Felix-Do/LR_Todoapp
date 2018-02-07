@@ -33,6 +33,30 @@
                     <span>Users</span>
                 </a>
             </li>
+            <li @if( $menu=='branches') class="active" @endif >
+                <a href="{!! action('Admin\BranchController@index') !!}">
+                    <i class="fa fa-files"></i>
+                    <span>Branches</span>
+                </a>
+            </li>
+            <li @if( $menu=='files') class="active" @endif >
+                <a href="{!! action('Admin\FileController@index') !!}">
+                    <i class="fa fa-files"></i>
+                    <span>Files</span>
+                </a>
+            </li>
+            <li @if( $menu=='admin-user-roles') class="active" @endif >
+                <a href="{!! action('Admin\AdminUserRoleController@index') !!}">
+                    <i class="fa fa-files"></i>
+                    <span>AdminUserRoles</span>
+                </a>
+            </li>
+            <li @if( $menu=='tasks') class="active" @endif >
+                <a href="{!! action('Admin\TaskController@index') !!}">
+                    <i class="fa fa-files"></i>
+                    <span>Tasks</span>
+                </a>
+            </li>
         </ul>
     </section>
 </aside>

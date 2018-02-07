@@ -1,18 +1,35 @@
-<?php
+<?PHP
+
 namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use LaravelRocket\Foundation\Models\AuthenticatableBase;
 
+/**
+ * App\Models\User.
+ *
+ * @method \App\Presenters\UserPresenter present()
+ *
+ */
+
 class User extends AuthenticatableBase
 {
+
     use HasApiTokens, Notifiable;
+
+
+    /**
+     * The database table used by the model.
+     *
+     * @var  string
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var  array
      */
     protected $fillable = [
         'name',
@@ -22,16 +39,14 @@ class User extends AuthenticatableBase
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The attributes excluded from the model's JSON form.
      *
-     * @var array
+     * @var  array
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = [];
 
-    protected $dates = [];
+    protected $dates  = [
+    ];
 
     protected $presenter = \App\Presenters\UserPresenter::class;
 
@@ -41,5 +56,17 @@ class User extends AuthenticatableBase
         return $this->belongsTo(\App\Models\File::class, 'profile_image_id', 'id');
     }
 
+    public function branchUsers()
+    {
+        return $this->hasMany(\App\Models\BranchUser::class, 'user_id', 'id');
+    }
+
+    public function branches()
+    {
+        return $this->belongsToMany(\App\Models\BranchUser::class, 'branch_users', 'branch_id', 'user_id');
+    }
+
+
     // Utility Functions
+
 }

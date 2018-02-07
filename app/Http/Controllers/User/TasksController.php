@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Task;
+use App\Models\Task;
 use App\Http\Requests\TaskCreateRequest;
 
 class TasksController extends Controller
@@ -108,8 +108,7 @@ class TasksController extends Controller
         if (empty($request->input('name')) || empty($request->input('duedate'))) {
             return \Redirect::action('User\TasksController@edit', $id);
         }
-
-        // create new Task
+        
         $task = Task::find($id);
         $task->name = $request->input('name');
         $task->description = $request->input('description');

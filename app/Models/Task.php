@@ -1,13 +1,55 @@
-<?php
+<?PHP
 
-// namespace App;
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use LaravelRocket\Foundation\Models\Base;
 
-class Task extends Model
+/**
+ * App\Models\Task.
+ *
+ * @method \App\Presenters\TaskPresenter present()
+ *
+ */
+
+class Task extends Base
 {
+
+
+
+    /**
+     * The database table used by the model.
+     *
+     * @var  string
+     */
     protected $table = 'tasks';
-    public $primaryKey = 'id';
-    public $timestamps = true;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var  array
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'duedate',
+        'status',
+        'label',
+    ];
+
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var  array
+     */
+    protected $hidden = [];
+
+    protected $dates  = [
+    ];
+
+    protected $presenter = \App\Presenters\TaskPresenter::class;
+
+    // Relations
+
+    // Utility Functions
+
 }

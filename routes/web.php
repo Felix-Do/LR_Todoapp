@@ -24,7 +24,3 @@ Route::group([], function () {
 
 
 Route::resource('tasks', 'User\TasksController');
-
-// Auth::routes();
-
-// Route::get('/home', 'HomeController@index')->name('home');

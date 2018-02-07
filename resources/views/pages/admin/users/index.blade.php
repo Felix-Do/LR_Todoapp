@@ -1,4 +1,4 @@
-@extends('layouts.admin.application', ['menu' => 'user'] )
+@extends('layouts.admin.application', ['menu' => 'users'] )
 
 @section('metadata')
 @stop
@@ -8,18 +8,17 @@
 
 @section('scripts')
     <script src="{!! \URLHelper::asset('js/delete_item.js', 'admin') !!}"></script>
-    <script src="{!! \URLHelper::asset('js/sortable.js', 'admin') !!}"></script>
 @stop
 
 @section('title')
 @stop
 
 @section('header')
-    Users
+User
 @stop
 
 @section('breadcrumb')
-    <li class="active">Users</li>
+    <li class="active">User</li>
 @stop
 
 @section('content')
@@ -27,38 +26,40 @@
         <div class="box-header with-border">
             <h3 class="box-title">
                 <p class="text-right">
-                    <a href="{!! action('Admin\UserController@create') !!}"
-                       class="btn btn-block btn-primary btn-sm">@lang('admin.pages.common.buttons.create')</a>
+                    <a href="{!! action('Admin\UserController@create') !!}" class="btn btn-block btn-primary btn-sm">@lang('admin.pages.common.buttons.create')</a>
                 </p>
             </h3>
-            {!! \PaginationHelper::render($offset, $limit, $count, $baseUrl, [],5, 'shared.admin.pagination' ) !!}
+            {!! \PaginationHelper::render($offset, $limit, $count, $baseUrl, []) !!}
         </div>
         <div class="box-body">
             <table class="table table-bordered">
                 <tr>
                     <th style="width: 10px">ID</th>
-                    <th>@lang('admin.pages.users.columns.name')</th>
-                    <th>@lang('admin.pages.users.columns.email')</th>
-
+                    <th>@lang('tables/users/columns.name')</th>
+                    <th>@lang('tables/users/columns.email')</th>
+                    <th>@lang('tables/users/columns.password')</th>
+                    <th>@lang('tables/users/columns.profile_image_id')</th>
+                    <th>@lang('tables/users/columns.remember_token')</th>
                     <th style="width: 40px">&nbsp;</th>
                 </tr>
-                @foreach( $users as $user )
+                @foreach( $models as $model )
                     <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
+                        <td>{{ $model->id }}</td>
+                                <td>{{ $model->present()->name }}</td>
+                                <td>{{ $model->present()->email }}</td>
+                                <td>{{ $model->present()->password }}</td>
+                                <td>{{ $model->present()->profile_image_id }}</td>
+                                <td>{{ $model->present()->remember_token }}</td>
                         <td>
-                            <a href="{!! action('Admin\UserController@show', $user->id) !!}"
-                               class="btn btn-block btn-primary btn-sm">@lang('admin.pages.common.buttons.edit')</a>
-                            <a href="#" class="btn btn-block btn-danger btn-sm delete-button"
-                               data-delete-url="{!! action('Admin\UserController@destroy', $user->id) !!}">@lang('admin.pages.common.buttons.delete')</a>
+                            <a href="{!! action('Admin\UserController@show', $model->id) !!}" class="btn btn-block btn-primary btn-sm">@lang('admin.pages.common.buttons.edit')</a>
+                            <a href="#" class="btn btn-block btn-danger btn-sm delete-button" data-delete-url="{!! action('Admin\UserController@destroy', $model->id) !!}">@lang('admin.pages.common.buttons.delete')</a>
                         </td>
                     </tr>
                 @endforeach
             </table>
         </div>
         <div class="box-footer">
-            {!! \PaginationHelper::render($offset, $limit, $count, $baseUrl, [],5, 'shared.admin.pagination' ) !!}
+            {!! \PaginationHelper::render($offset, $limit, $count, $baseUrl, []) !!}
         </div>
     </div>
 @stop
