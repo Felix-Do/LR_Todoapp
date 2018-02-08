@@ -19,7 +19,7 @@
 
 @section('content')
     <section>
-        <div class="container">
+        {{--  <div class="container">
             <br>
             <a href="{{ action('User\TaskController@index') }}" class="btn btn-default">GoBack</a>
             <br>
@@ -28,6 +28,6 @@
             <p>DueDate: {{$task->duedate}}</p>
             <p>Status: {{$task->status}}</p>
             <p>Label: {{$task->label}}</p>
-        </div>
+        </div>  --}}
     </section>
 @stop

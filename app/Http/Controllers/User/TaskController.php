@@ -97,7 +97,7 @@ class TaskController extends Controller
         if (empty($request->input('name')) || empty($request->input('duedate'))) {
             // inputs are no good
             // create a temp Task to pass back to the Create page
-            $task = $this->taskService->newTask_request($request->all(), $user->id);
+            $task = $this->taskService->newTask($request->all(), $user->id);
             return view('pages.user.tasks.create', [
                 'task' => $task,
                 'user' => $user

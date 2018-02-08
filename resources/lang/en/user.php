@@ -16,5 +16,28 @@ return [
                 'password'        => 'Password',
             ],
         ],
+        'tasks' => [
+            'buttons' => [
+                'back' => '< Go Back',
+                'new' => 'Create New Task',
+                'create' => 'Create This Task',
+                'save' => 'Save This Task',
+                'delete' => 'Delete This Task',
+            ],
+            'top' => [
+                'index' => 'You have these tasks active',
+                'create' => 'Create a new task',
+                'edit' => 'Edit this task',
+            ],
+            'field_warning' => [
+                'name' => 'Please Enter a Name',
+                'duedate' => 'Please Enter a Due Date',
+            ],
+            'field_placeholder' => [
+                'filter' => 'filter',
+                'name' => 'enter a name',
+                'description' => 'description goes here',
+            ],
+        ]
     ],
 ];

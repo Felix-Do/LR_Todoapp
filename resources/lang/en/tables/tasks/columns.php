@@ -5,7 +5,7 @@ return [
     'user_id' => 'User',
     'name' => 'Name',
     'description' => 'Description',
-    'duedate' => 'Duedate',
+    'duedate' => 'Due Date',
     'status' => 'Status',
     'label' => 'Label',
     'created_at' => 'Created At',

@@ -22,10 +22,11 @@
         <div class="container">
             <br>
             {{--  <p>current user: {{$user->id}} - {{$user->email}}</p>  --}}
-            <a href="{{ action('User\TaskController@create') }}" class="btn btn-default">Create New Task</a>
+            <a href="{{ action('User\TaskController@create') }}"
+                class="btn btn-default">@lang('user.pages.tasks.buttons.new')</a>
             @if ( count($tasks) >= 1 )
                 <br>
-                <p>You have these tasks active:</p>
+                <p>@lang('user.pages.tasks.top.index'):</p>
                 <br>
                 <input type="text" name="filter" value="" placeholder="filter">
                 <br>
@@ -34,9 +35,9 @@
                         <div class="well">
                             <h3>{{$task->name}}</h3>
                             <p>{{$task->description}}</p>
-                            <p>DueDate: {{$task->duedate}}</p>
-                            <p>Status: {{ $task->present()->statusName }}</p>
-                            <p>Label: {{ $task->present()->labelName }}</p>
+                            <p>@lang('tables\tasks\columns.duedate'): {{$task->duedate}}</p>
+                            <p>@lang('tables\tasks\columns.status'): {{ $task->present()->statusName }}</p>
+                            <p>@lang('tables\tasks\columns.label'): {{ $task->present()->labelName }}</p>
                         </div>
                     </a>
                 @endforeach
