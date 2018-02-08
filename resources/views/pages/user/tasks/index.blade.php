@@ -21,7 +21,7 @@
     <section>
         <div class="container">
             <br>
-            <p>current user: {{$user->id}} - {{$user->email}}</p>
+            {{--  <p>current user: {{$user->id}} - {{$user->email}}</p>  --}}
             <a href="{{ action('User\TaskController@create') }}" class="btn btn-default">Create New Task</a>
             @if ( count($tasks) >= 1 )
                 <br>
@@ -35,16 +35,8 @@
                             <h3>{{$task->name}}</h3>
                             <p>{{$task->description}}</p>
                             <p>DueDate: {{$task->duedate}}</p>
-                            <p>Status: 
-                                @if($task->status==1)
-                                    In Progress
-                                @elseif($task->status==2)
-                                    Finished
-                                @else
-                                    Not Started
-                                @endif
-                            </p>
-                            <p>Label: {{$task->label}}</p>
+                            <p>Status: {{ $task->present()->statusName }}</p>
+                            <p>Label: {{ $task->present()->labelName }}</p>
                         </div>
                     </a>
                 @endforeach

@@ -42,53 +42,18 @@
                     <div class="alert alert-danger">Please Enter a Due Date</div>
                 @endif
                 Status: 
-                <input type="radio" name="status" value=0 
-                    @if($task->status < 1 || $task->status > 2)
-                        checked
-                    @endif
-                > Not Started
-                <input type="radio" name="status" value=1 
-                    @if($task->status==1)
-                        checked
-                    @endif
-                > In Progress
-                <input type="radio" name="status" value=2 
-                    @if($task->status==2)
-                        checked
-                    @endif
-                > Finished
+                @for ($i = 0; $i < $task->present()->statusCount; $i++)
+                    <input type="radio" name="status" value={{$i}}
+                        {{ $task->present()->statusCheck($i) }}
+                    > {{ $task->present()->statusName($i) }}
+                @endfor
                 <br><br>
                 Label: 
-                <input type="radio" name="label" value=0 
-                    @if($task->label < 1 || $task->label > 5)
-                        checked
-                    @endif
-                > No Label
-                <input type="radio" name="label" value=1 
-                    @if($task->label==1)
-                        checked
-                    @endif
-                > Label 1
-                <input type="radio" name="label" value=2 
-                    @if($task->label==2)
-                        checked
-                    @endif
-                > Label 2
-                <input type="radio" name="label" value=3 
-                    @if($task->label==3)
-                        checked
-                    @endif
-                > Label 3
-                <input type="radio" name="label" value=4 
-                    @if($task->label==4)
-                        checked
-                    @endif
-                > Label 4
-                <input type="radio" name="label" value=5 
-                    @if($task->label==5)
-                        checked
-                    @endif
-                > Label 5
+                @for ($i = 0; $i < $task->present()->labelCount; $i++)
+                    <input type="radio" name="label" value={{$i}}
+                        {{ $task->present()->labelCheck($i) }}
+                    > {{ $task->present()->labelName($i) }}
+                @endfor
                 <br><br>
                 <button type="submit" class="btn btn-default" name="actionBtn" value="update">Save This Task</button>
             </form>
