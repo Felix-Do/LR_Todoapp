@@ -42,6 +42,9 @@
                     </a>
                 @endforeach
                 {{$tasks->links()}}
+            @else
+                <br>
+                <p>@lang('user.pages.tasks.top.index_empty')</p>
             @endif
         </div>
     </section>

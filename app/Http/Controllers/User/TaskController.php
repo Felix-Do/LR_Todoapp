@@ -52,7 +52,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $user = $this->userService->getUser();
+        $user = $this->userService->getUser_hidePassword();
         if(empty($user)) {
             return redirect(action('User\AuthController@getSignIn'));
         }
@@ -70,7 +70,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $user = $this->userService->getUser();
+        $user = $this->userService->getUser_hidePassword();
         if(empty($user)) {
             return redirect(action('User\TaskController@index'));
         }
@@ -90,7 +90,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $user = $this->userService->getUser();
+        $user = $this->userService->getUser_hidePassword();
         if(empty($user)) {
             return redirect(action('User\AuthController@getSignIn'));
         }
@@ -129,7 +129,7 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $user = $this->userService->getUser();
+        $user = $this->userService->getUser_hidePassword();
         $task = $this->taskService->getTask($id, $user->id);
         // redirect to index page if the user has no rights or task does not exist
         if ($task->user_id !== $user->id || empty($task)) {
@@ -157,7 +157,7 @@ class TaskController extends Controller
             return \Redirect::action('User\TaskController@destroy', ['id' => $id]);
         }
 
-        $user = $this->userService->getUser();
+        $user = $this->userService->getUser_hidePassword();
         $task = $this->taskService->updateTask($request,$id,$user->id);
         if (empty($task)) {
             // a required field is empty, go back to edit page with the original values
@@ -175,7 +175,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $user = $this->userService->getUser();
+        $user = $this->userService->getUser_hidePassword();
         $this->taskService->deleteTask($id, $user->id);
         return \Redirect::action('User\TaskController@index');
     }

@@ -20,11 +20,31 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         $this->taskRepository = $taskRepository;
     }
 
+    public $sort = [
+        'column' => 'duedate',
+        'direction' => 'asc',
+    ];
+
     public function getModel() {
         return new Task;
     }
 
-    public function getTasks($user_id=-1,$perPageCount=-1,$sortBy='duedate',$sortDir='asc') {
+    public function setSort($column='', $direction='') {
+        if (Schema::hasTable('tasks')) {
+            if (Schema::hasColumn('tasks', $column)) {
+                $this->sort['column'] = $column;
+            }
+            if ($direction == 'asc' || $direction == 'desc') {
+                $this->sort['direction'] = $direction;
+            }
+        }
+        return [
+            'column' => $this->sort['column'],
+            'direction' => $this->sort['direction']
+        ];
+    }
+
+    public function getTasks($user_id=-1, $perPageCount=-1) {
         
         $perPageCountMax = 10;
         if ($perPageCount < 1 || $perPageCount > $perPageCountMax) {
@@ -32,23 +52,12 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         }
 
         // get the tasks and sort them
-        $tasks = Task::orderBy('duedate', 'asc')->paginate($perPageCount);
-        if ($user_id >= 0) {
-            $tasks = Task::orderBy('duedate', 'asc')
-                ->where('user_id', $user_id)
+        $tasks = Task::orderBy($this->sort['column'], $this->sort['direction'])
+            ->where('user_id', $user_id)
+            ->paginate($perPageCount);
+        if ($user_id == -1) {
+            $tasks = Task::orderBy($this->sort['column'], $this->sort['direction'])
                 ->paginate($perPageCount);
-        }
-        if (Schema::hasTable('tasks')) {
-            if (Schema::hasColumn('tasks', $sortBy)) {
-                if ($sortDir=='asc' || $sortDir=='desc') {
-                    $tasks = Task::orderBy($sortBy, $sortDir)->paginate($perPageCount);
-                    if ($user_id >= 0) {
-                        $tasks = Task::orderBy($sortBy, $sortDir)
-                            ->where('user_id', $user_id)
-                            ->paginate($perPageCount);
-                    }
-                }
-            }
         }
         
         return $tasks;

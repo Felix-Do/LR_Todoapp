@@ -25,7 +25,8 @@ return [
                 'delete' => 'Delete This Task',
             ],
             'top' => [
-                'index' => 'You have these tasks active',
+                'index' => 'You have these upcoming tasks',
+                'index_empty' => 'You don\'t have any tasks',
                 'create' => 'Create a new task',
                 'edit' => 'Edit this task',
             ],

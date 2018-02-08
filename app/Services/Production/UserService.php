@@ -44,4 +44,12 @@ class UserService extends AuthenticatableService implements UserServiceInterface
 
         return parent::createWithImageUrl($input, $imageUrl);
     }
+
+    public function getUser_hidePassword() {
+        $user = $this->getUser();
+        if ( ! empty($user)) {
+            $user->password = "";
+        }
+        return $user;
+    }
 }
