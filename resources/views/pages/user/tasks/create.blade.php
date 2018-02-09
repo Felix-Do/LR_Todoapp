@@ -21,8 +21,6 @@
     <section>
         <div class="container">
             <br>
-            {{--  @include("layouts.user.messages")  --}}
-            <br>
             <a href="{{ action('User\TaskController@index') }}" class="btn btn-default">
                 @lang('user.pages.tasks.buttons.back')
             </a>
@@ -32,10 +30,9 @@
             <form action="{!! action('User\TaskController@store') !!}" method="post">
                 {!! csrf_field() !!}
                 @lang('tables\tasks\columns.name'):
-                {{--  {{ __(messages.tasks.field.name) }}:  --}}
                 <input type="text" name="name"
                     placeholder="@lang('user.pages.tasks.field_placeholder.name')"
-                    id="input_name" autofocus value="{{$task->name}}">
+                    id="autoselect_element" class="autoselect" autofocus value="{{$task->name}}">
                 @if(empty($task->name))
                     <div class="alert alert-danger">
                         @lang('user.pages.tasks.field_warning.name')
@@ -70,8 +67,5 @@
             </form>
         </div>
     </section>
-    <script>
-        // auto select the input text name field
-        document.getElementById('input_name').select();
-    </script>
+    @include('pages.user.tasks.autoselect');
 @stop

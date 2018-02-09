@@ -25,7 +25,10 @@ Route::group([], function () {
 
 Route::resource('tasks', 'User\TaskController');
 
-Route::post('tasks/sort', 'User\TaskController@sortTask');
+// Route::get('tasks/sort/{param}', 'User\TaskController@show');
+// Route::post('tasks/sort/{param}', array(
+//     'uses' => 'User\TaskController@sort',
+//     'as' => 'tasks.sort'
+// ));
 
-
-// Route::post('tasks/')
+// Route::post('tasks', 'User\TaskController@sort_filter');

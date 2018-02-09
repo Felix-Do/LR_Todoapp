@@ -21,7 +21,24 @@
     <section>
         <div class="container">
             <br>
-            <p>{{ $sort['column'] }} - {{ $sort['direction'] }}</p>
+            {{--  <p>{{ $sort['column'] }} - {{ $sort['direction'] }}</p>  --}}
+            <form
+                action="{!! action('User\TaskController@index') !!}"
+                method="POST">
+                {{ csrf_field() }}
+                <input name="_method" type="hidden" value="GET">
+                <input type="text" name="filter" value="{{ $filter }}" placeholder="filter">
+                <button type="submit" name="actionBtn" value="filter" class="btn btn-default">Search</button>
+                <button type="submit" name="actionBtn" 
+                    value="{{ $sort['direction'] }}" class="btn btn-default">
+                    Sort: {{ $sort['direction'] }}
+                </button>
+                <button type="submit" name="actionBtn" 
+                    value="{{ $sort['column'] }}" class="btn btn-default">
+                    Sort: {{ $sort['column'] }}
+                </button>
+            </form>
+            <br>
             {{--  <p>current user: {{$user->id}} - {{$user->email}}</p>  --}}
             <a href="{{ action('User\TaskController@create') }}"
                 class="btn btn-default">@lang('user.pages.tasks.buttons.new')</a>
@@ -29,10 +46,8 @@
                 <br>
                 <p>@lang('user.pages.tasks.top.index'):</p>
                 <br>
-                <input type="text" name="filter" value="" placeholder="filter">
-                <br>
                 @foreach($tasks as $task)
-                    <a href="tasks/{{$task->id}}/edit">
+                    <a href="{{ action('User\TaskController@edit', $task->id) }}">
                         <div class="well">
                             <h3>{{ $task->name }}</h3>
                             <p>{{ $task->description }}</p>

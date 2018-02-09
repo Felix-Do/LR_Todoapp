@@ -48,21 +48,32 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->taskService->getSort();
         $user = $this->userService->getUser_hidePassword();
         if(empty($user)) {
             return redirect(action('User\AuthController@getSignIn'));
         }
-        return $this->taskService->setSort('', '');
+        // $this->taskService->setSort(, '');
+        $button = $request->input('actionBtn');
+        if ( $button == 'filter' ) {
+            $this->taskService->setFilter($request->input('filter'));
+        }
+        if ($button == 'asc') {
+            $this->taskService->setSort('', 'desc');
+        }
+        if ($button == 'asc') {
+            $this->taskService->setSort('', 'desc');
+        }
         $tasks = $this->taskService->getTasks($user->id,5);
         return view('pages.user.tasks.index', [
             'tasks' => $tasks,
             'user' => $user,
-            'sort' => $this->taskService->getSort()
+            'sort' => $this->taskService->getSort(),
+            'filter' => $this->taskService->getFilter()
         ]);
     }
 
@@ -120,10 +131,6 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $this->taskService->setSort('name', 'desc');
-        if ($id=='desc') {
-            // return $this->taskService->setSort('', 'desc');
-        }
         // redirect to index (nothing to show)
         return redirect(action('User\TaskController@index'));
     }
@@ -157,13 +164,6 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        // check if updating or deleting
-        if ( $request->input('actionBtn') == "delete" ) {
-            // delete this task
-            return \Redirect::action('User\TaskController@destroy', ['id' => $id]);
-        }
-
         $user = $this->userService->getUser_hidePassword();
         $task = $this->taskService->updateTask($request,$id,$user->id);
         if (empty($task)) {
@@ -186,9 +186,11 @@ class TaskController extends Controller
         $this->taskService->deleteTask($id, $user->id);
         return \Redirect::action('User\TaskController@index');
     }
-
-    public function sortTask()
-    {
-        return "sorting the tasks";
-    }
+    
+    // public function sort_filter(Request $request) {
+    //     if ($request->input('filter') != '') {
+    //         // return $request->input('filter');
+    //     }
+    //     return redirect(action('User\TaskController@index'));
+    // }
 }

@@ -20,14 +20,11 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         $this->taskRepository = $taskRepository;
     }
 
+    public $filter = '';
     public $sort = [
         'column' => 'duedate',
         'direction' => 'asc',
     ];
-
-    public function getModel() {
-        return new Task;
-    }
 
     public function setSort($column='', $direction='') {
         if (Schema::hasTable('tasks')) {
@@ -41,8 +38,31 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         return $this->sort;
     }
 
+    public function setSort_switchDir($currentDirection='') {
+        if ($direction == 'asc') {
+            $this->sort['direction'] = 'desc';
+        }
+        if ($direction == 'desc') {
+            $this->sort['direction'] = 'asc';
+        }
+        return $this->sort;
+    }
+
     public function getSort() {
         return $this->sort;
+    }
+
+    public function setFilter($filter='') {
+        $this->filter = $filter;
+        return $this->filter;
+    }
+
+    public function getFilter() {
+        return $this->filter;
+    }
+
+    public function getModel() {
+        return new Task;
     }
 
     public function getTasks($user_id=-1, $perPageCount=-1) {
@@ -55,7 +75,12 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         // get the tasks and sort them
         $tasks = Task::orderBy($this->sort['column'], $this->sort['direction'])
             ->where('user_id', $user_id)
+            ->where(function ($query) {
+                $query->where('name', 'LIKE', '%'.$this->filter.'%')
+                ->orWhere('description', 'LIKE', '%'.$this->filter.'%');
+            })
             ->paginate($perPageCount);
+        // get all tasks if $user_if == -1
         if ($user_id == -1) {
             $tasks = Task::orderBy($this->sort['column'], $this->sort['direction'])
                 ->paginate($perPageCount);

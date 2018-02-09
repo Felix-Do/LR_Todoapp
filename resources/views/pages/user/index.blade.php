@@ -21,7 +21,7 @@
     <section>
         <div class="container">
             <br>
-            <a href="/tasks" class="btn btn-default">Go to Tasks</a>
+            <a href="{{ action('User\TaskController@index') }}" class="btn btn-default">Go to Tasks</a>
         </div>
     </section>
 @stop
