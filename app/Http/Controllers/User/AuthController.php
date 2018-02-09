@@ -54,8 +54,10 @@ class AuthController extends Controller
 
     public function postSignOut()
     {
-        // this does not work?
-        $this->userService->signOut();
+        $user = $this->userService->getUser();
+        if (!empty($user)) {
+            $this->userService->signOut();
+        }
 
         return \Redirect::action('User\AuthController@getSignIn');
     }

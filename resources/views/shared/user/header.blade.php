@@ -10,11 +10,19 @@
         <ul class="menu">
         <li><img src="https://placehold.it/100x100" width=40 height=40 class="c-profile-image"></li>
         @if( empty($authUser) )
-        <li><a href="{{ action('User\AuthController@getSignIn') }}">Sign In</a></li>
-        <li><a href="{{ action('User\AuthController@getSignUp') }}">Sign Up</a></li>
+            <li><a href="{{ action('User\AuthController@getSignIn') }}">Sign In</a></li>
+            <li><a href="{{ action('User\AuthController@getSignUp') }}">Sign Up</a></li>
         @else
-        <li><a href="{{ action('User\AuthController@getSignIn') }}">Setting</a></li>
-        <li><a href="{{ action('User\AuthController@getSignUp') }}">Sign Out</a></li>
+            <li><a href="{{ action('User\AuthController@getSignIn') }}">Setting</a></li>
+            <li>
+                {{--  <a href="{{ action('User\AuthController@getSignUp') }}">Sign Out</a>  --}}
+                <form action="{{ action('User\AuthController@postSignOut') }}" method="post">
+                    {!! csrf_field() !!}
+                    <button type="submit">
+                        <a>Sign Out</a>
+                    </button>
+                </form>
+            </li>
         @endif
         </ul>
     </div>

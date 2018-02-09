@@ -13,7 +13,6 @@
 </head>
 <body class="{!! isset($bodyClasses) ? $bodyClasses : '' !!}">
 @if( isset($noFrame) && $noFrame == true )
-    {{--  @include('inc.messages')  --}}
     @yield('content')
 @else
     @include('layouts.user.frame')

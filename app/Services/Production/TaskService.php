@@ -38,10 +38,11 @@ class TaskService extends  BaseService  implements TaskServiceInterface
                 $this->sort['direction'] = $direction;
             }
         }
-        return [
-            'column' => $this->sort['column'],
-            'direction' => $this->sort['direction']
-        ];
+        return $this->sort;
+    }
+
+    public function getSort() {
+        return $this->sort;
     }
 
     public function getTasks($user_id=-1, $perPageCount=-1) {

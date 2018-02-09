@@ -24,3 +24,8 @@ Route::group([], function () {
 
 
 Route::resource('tasks', 'User\TaskController');
+
+Route::post('tasks/sort', 'User\TaskController@sortTask');
+
+
+// Route::post('tasks/')

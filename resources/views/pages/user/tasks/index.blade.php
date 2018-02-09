@@ -21,6 +21,7 @@
     <section>
         <div class="container">
             <br>
+            <p>{{ $sort['column'] }} - {{ $sort['direction'] }}</p>
             {{--  <p>current user: {{$user->id}} - {{$user->email}}</p>  --}}
             <a href="{{ action('User\TaskController@create') }}"
                 class="btn btn-default">@lang('user.pages.tasks.buttons.new')</a>
@@ -33,9 +34,9 @@
                 @foreach($tasks as $task)
                     <a href="tasks/{{$task->id}}/edit">
                         <div class="well">
-                            <h3>{{$task->name}}</h3>
-                            <p>{{$task->description}}</p>
-                            <p>@lang('tables\tasks\columns.duedate'): {{$task->duedate}}</p>
+                            <h3>{{ $task->name }}</h3>
+                            <p>{{ $task->description }}</p>
+                            <p>@lang('tables\tasks\columns.duedate'): {{ $task->duedate }}</p>
                             <p>@lang('tables\tasks\columns.status'): {{ $task->present()->statusName }}</p>
                             <p>@lang('tables\tasks\columns.label'): {{ $task->present()->labelName }}</p>
                         </div>

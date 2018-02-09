@@ -52,14 +52,17 @@ class TaskController extends Controller
      */
     public function index()
     {
+        return $this->taskService->getSort();
         $user = $this->userService->getUser_hidePassword();
         if(empty($user)) {
             return redirect(action('User\AuthController@getSignIn'));
         }
-        $tasks = $this->taskService->getTasks($user->id,5,'duedate','desc');
+        return $this->taskService->setSort('', '');
+        $tasks = $this->taskService->getTasks($user->id,5);
         return view('pages.user.tasks.index', [
             'tasks' => $tasks,
-            'user' => $user
+            'user' => $user,
+            'sort' => $this->taskService->getSort()
         ]);
     }
 
@@ -117,8 +120,12 @@ class TaskController extends Controller
      */
     public function show($id)
     {
+        $this->taskService->setSort('name', 'desc');
+        if ($id=='desc') {
+            // return $this->taskService->setSort('', 'desc');
+        }
         // redirect to index (nothing to show)
-        return \Redirect::action('User\TaskController@index');
+        return redirect(action('User\TaskController@index'));
     }
 
     /**
@@ -178,5 +185,10 @@ class TaskController extends Controller
         $user = $this->userService->getUser_hidePassword();
         $this->taskService->deleteTask($id, $user->id);
         return \Redirect::action('User\TaskController@index');
+    }
+
+    public function sortTask()
+    {
+        return "sorting the tasks";
     }
 }
