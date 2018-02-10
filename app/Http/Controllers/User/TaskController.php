@@ -57,18 +57,8 @@ class TaskController extends Controller
         if(empty($user)) {
             return redirect(action('User\AuthController@getSignIn'));
         }
-        // $this->taskService->setSort(, '');
-        $button = $request->input('actionBtn');
-        if ( $button == 'filter' ) {
-            $this->taskService->setFilter($request->input('filter'));
-        }
-        if ($button == 'asc') {
-            $this->taskService->setSort('', 'desc');
-        }
-        if ($button == 'asc') {
-            $this->taskService->setSort('', 'desc');
-        }
-        $tasks = $this->taskService->getTasks($user->id,5);
+        $this->taskService->setFilterSort_request($request->all());
+        $tasks = $this->taskService->getTasks($user->id);
         return view('pages.user.tasks.index', [
             'tasks' => $tasks,
             'user' => $user,

@@ -20,11 +20,16 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         $this->taskRepository = $taskRepository;
     }
 
+    public $paginateCount = 5;
     public $filter = '';
     public $sort = [
         'column' => 'duedate',
         'direction' => 'asc',
+        'column_options' => array('duedate', 'label', 'name'),
+        'direction_options' => array('asc', 'desc'),
     ];
+
+    public $testV = '';
 
     public function setSort($column='', $direction='') {
         if (Schema::hasTable('tasks')) {
@@ -38,12 +43,43 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         return $this->sort;
     }
 
-    public function setSort_switchDir($currentDirection='') {
-        if ($direction == 'asc') {
-            $this->sort['direction'] = 'desc';
+    public function setSort_cycleDirection($currentDirection='') {
+        $options = $this->sort['direction_options'];
+        $currentPos = array_search($currentDirection, $options);
+        $newPos = 0;
+        if ($currentPos >= 0) {
+            $newPos = ($currentPos + 1) % count($options);
         }
-        if ($direction == 'desc') {
-            $this->sort['direction'] = 'asc';
+        $this->sort['direction'] = $options[$newPos];
+        return $this->sort;
+    }
+
+    public function setSort_cycleColumn($currentColumn='') {
+        $options = $this->sort['column_options'];
+        $currentPos = array_search($currentColumn, $options);
+        $newPos = 0;
+        if ($currentPos >= 0) {
+            $newPos = ($currentPos + 1) % count($options);
+        }
+        $this->sort['column'] = $options[$newPos];
+        return $this->sort;
+    }
+
+    public function setFilterSort_request($request) {
+        if ( ! empty($request) ) {
+            $this->filter = $request['filter'];
+            $this->sort['column'] = $request['sort_column_current'];
+            $this->sort['direction'] = $request['sort_direction_current'];
+            $button = $request['actionBtn'];
+            if ($button == 'filter') {
+                $this->setFilter($request['filter']);
+            }
+            if ($button == 'cycle_direction') {
+                $this->setSort_cycleDirection($request['sort_direction_current']);
+            }
+            if ($button == 'cycle_column') {
+                $this->setSort_cycleColumn($request['sort_column_current']);
+            }
         }
         return $this->sort;
     }
@@ -65,8 +101,9 @@ class TaskService extends  BaseService  implements TaskServiceInterface
         return new Task;
     }
 
-    public function getTasks($user_id=-1, $perPageCount=-1) {
+    public function getTasks($user_id=-1) {
         
+        $perPageCount = $this->paginateCount;
         $perPageCountMax = 10;
         if ($perPageCount < 1 || $perPageCount > $perPageCountMax) {
             $perPageCount = $perPageCountMax;
