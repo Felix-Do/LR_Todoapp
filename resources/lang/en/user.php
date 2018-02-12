@@ -23,6 +23,8 @@ return [
                 'create' => 'Create This Task',
                 'save' => 'Save This Task',
                 'delete' => 'Delete This Task',
+                'search' => 'Search',
+                'sort' => 'Sort',
             ],
             'top' => [
                 'index' => 'You have these upcoming tasks',

@@ -21,23 +21,24 @@
     <section>
         <div class="container">
             <br>
-            <p>{{ $sort['column'] }} - {{ $sort['direction'] }}</p>
-            <form
-                action="{!! action('User\TaskController@index') !!}"
-                method="POST">
+            {{--  <p>{{ $sort['column'] }} - {{ $sort['direction'] }}</p>  --}}
+            <form action="{!! action('User\TaskController@index') !!}" method="POST">
                 {{ csrf_field() }}
                 <input type="hidden" name="_method" value="GET">
                 <input type="hidden" name="sort_column_current" value="{{ $sort['column'] }}">
                 <input type="hidden" name="sort_direction_current" value="{{ $sort['direction'] }}">
                 <input type="text" name="filter" value="{{ $filter }}" placeholder="filter">
-                <button type="submit" name="actionBtn" value="filter" class="btn btn-default">Search</button>
-                <button type="submit" name="actionBtn" 
-                    value="cycle_direction" class="btn btn-default">
-                    Sort: {{ $sort['direction'] }}
+                <button type="submit" name="actionBtn" class="btn btn-default"
+                    value="filter">
+                    @lang('user.pages.tasks.buttons.search')
                 </button>
-                <button type="submit" name="actionBtn" 
-                    value="cycle_column" class="btn btn-default">
-                    Sort: {{ $sort['column'] }}
+                <button type="submit" name="actionBtn" class="btn btn-default" 
+                    value="cycle_direction">
+                    @lang('user.pages.tasks.buttons.sort'): {{ $sort['direction'] }}
+                </button>
+                <button type="submit" name="actionBtn" class="btn btn-default" 
+                    value="cycle_column">
+                    @lang('user.pages.tasks.buttons.sort'): {{ $sort['column'] }}
                 </button>
             </form>
             <br>
